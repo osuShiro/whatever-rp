@@ -1,10 +1,10 @@
 from django.test import TestCase, Client
-from . import models
+from restapi import models
 
 # Create your tests here.
 c = Client()
 
-class RoomTestCase(TestCase):
+class GameModelTestCase(TestCase):
 
     def setUp(self):
         pathfinder=models.GameModel(name='pathfinder3.5',dice='d20')

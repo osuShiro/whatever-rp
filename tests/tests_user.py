@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from . import models
+from restapi import models
 
 # Create your tests here.
 c = Client()
