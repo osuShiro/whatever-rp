@@ -1,3 +1,5 @@
+import datetime
+from django.apps import apps
 from django.db import models
 from django.contrib.auth.models import User
 
