@@ -1,10 +1,10 @@
 from django.test import TestCase, Client
-from . import models
+from restapi import models
 
 # Create your tests here.
 c = Client()
 
-class UserTest(TestCase):
+class UserTestCase(TestCase):
 
     def test_registration(self):
         user_count=models.User.objects.count()

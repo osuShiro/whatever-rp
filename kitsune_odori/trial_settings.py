@@ -120,12 +120,8 @@ password=passfile.read()
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'kitsuneodori',
-	'USER': 'anshee',
-	'PASSWORD': password,
-	'HOST': 'localhost',
-	'PORT': ''
     }
 }
 
