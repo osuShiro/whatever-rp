@@ -17,5 +17,7 @@ def rooms(request):
             room_dic['updated_at']=room.updated_at.isoformat()
             response.append(room_dic)
         return HttpResponse(json.dumps(response))
+    elif request.method=='POST':
+        error=False
     else:
         return HttpResponseBadRequest()
