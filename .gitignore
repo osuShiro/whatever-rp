@@ -1,2 +1,2 @@
 *.txt
-kitsune_odori/__pycache__
+*/__pycache__/*
