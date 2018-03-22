@@ -1,8 +1,16 @@
+from random import randint
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
 from restapi import models
-import json, datetime
+import json, datetime, os
+
+with open('static/animals.txt','r') as an_file:
+    animals = [s.strip() for s in an_file.readlines()]
+    animal_number = len(animals)
+with open('static/adjectives.txt','r') as adj_file:
+    adjectives = [s.strip() for s in adj_file.readlines()]
+    adjective_number = len(adjectives)
 
 # Create your views here.
 def rooms(request):
@@ -45,8 +53,18 @@ def rooms(request):
                 if models.Room.objects.filter(name__iexact=room_name):
                     error['name'] = 'Room name already taken.'
                 if not error:
+                    # generate text id
+                    duplicate = False
+                    while duplicate:
+                        animal = animals[randint(animal_number)]
+                        adjective = adjectives[randint(adjective_number)]
+                        if models.Room.objects.filter(text_id=adjective+animal) != []:
+                            duplicate = True
+                        else:
+                            duplicate = False
                     description = '' if not request.POST['description'] else request.POST['description']
                     new_room = models.Room(name=room_name,
+                        text_id = (adjective+animal).lower(),
                         description = description,
                         max_players = max_players,
                         created_at = datetime.datetime.utcnow(),

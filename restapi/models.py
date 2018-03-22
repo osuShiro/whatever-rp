@@ -15,6 +15,7 @@ class GameModel(models.Model):
 
 class Room(models.Model):
     name = models.CharField(max_length=256)
+    text_id = models.CharField(max_length=128,editable=False, default='')
     description = models.TextField(null=True, blank=True)
     max_players = models.IntegerField(default=8)
     created_at = models.DateTimeField(default=datetime.datetime.utcnow(), editable=False)
