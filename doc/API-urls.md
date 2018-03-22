@@ -43,3 +43,16 @@ an error json otherwise
 
 **returns:** if successful, a json with a single key "detail" and value "successfully logged out".
 an error json otherwise
+
+## JWT Token Refreshing
+**URL**: /refresh-token/
+
+**expected method**: POST
+
+**Payload**:
+```
+"token": existing JWT token
+```
+
+**returns**: if successful, a json with a single key "token" with a new token to use.
+An error json otherwise.
