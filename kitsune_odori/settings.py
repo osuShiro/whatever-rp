@@ -25,7 +25,7 @@ with open('key.txt','r') as keyfile:
 SECRET_KEY = key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -118,11 +118,14 @@ WSGI_APPLICATION = 'kitsune_odori.wsgi.application'
 passfile=open('pass.txt','r')
 password=passfile.read()
 
+db = open('db.txt','r')
+[username,db_name] = db.readlines()
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'kitsuneodori',
-	'USER': 'anshee',
+        'NAME': db_name.strip(),
+	'USER': username.strip(),
 	'PASSWORD': password,
 	'HOST': 'localhost',
 	'PORT': ''
