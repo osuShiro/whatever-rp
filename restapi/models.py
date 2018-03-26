@@ -15,11 +15,11 @@ class GameModel(models.Model):
 
 class Room(models.Model):
     name = models.CharField(max_length=256)
-    text_id = models.CharField(max_length=128,editable=False, default='', unique=True)
+    text_id = models.CharField(max_length=128, default='', unique=True)
     description = models.TextField(null=True, blank=True)
     max_players = models.IntegerField(default=8)
     created_at = models.DateTimeField(default=datetime.datetime.utcnow(), editable=False)
     updated_at = models.DateTimeField(default=datetime.datetime.utcnow())
 
     owner = models.ForeignKey(User)
-    game_model = models.ForeignKey(GameModel)
+    game_model = models.ForeignKey(GameModel, unique=True)
