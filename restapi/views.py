@@ -38,19 +38,19 @@ def rooms(request):
                 return HttpResponseForbidden()
             else:
                 keys=request.POST.keys()
-                # required fields: name, system, max_players
+                # required fields: name, game_model, max_players
                 if 'title' not in keys:
                     error['name'] = 'Room name missing.'
-                if 'system' not in keys:
-                    error['system'] = 'Game system missing.'
+                if 'game_model' not in keys:
+                    error['game_model'] = 'Game model missing.'
                 if 'max_players' not in keys:
                     error['max_players'] = 'Maximum players allowed missing.'
                 if not error:
                     room_name = request.POST['title']
                     try:
-                        system = models.GameModel.objects.get(name__iexact=request.POST['system'])
+                        game_model = models.GameModel.objects.get(name__iexact=request.POST['game_model'])
                     except ObjectDoesNotExist:
-                        error['system'] = 'Game system does not exist.'
+                        error['game_model'] = 'Game model does not exist.'
                     max_players = request.POST['max_players']
                     if models.Room.objects.filter(name__iexact=room_name):
                         error['name'] = 'Room name already taken.'
@@ -74,13 +74,13 @@ def rooms(request):
                             created_at = datetime.datetime.utcnow(),
                             updated_at = datetime.datetime.utcnow(),
                             owner = request.user,
-                            system = system)
+                            game_model = game_model)
                         new_room.save()
                         return_data['name'] = room_name
                         return_data['text_id'] = new_room.text_id
                         return_data['max_players'] = max_players
                         return_data['owner'] = request.user.username
-                        return_data['system'] = system.name
+                        return_data['game_model'] = game_model.name
             if error:
                 return HttpResponseBadRequest(json.dumps(error))
             else:

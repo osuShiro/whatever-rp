@@ -27,7 +27,7 @@ Requires authentication.
 **Payload:**
 ```
 "title": (string) room title
-"system": (string) game system name (dropdown menu from all existing system in the database)
+"game_model": (string) game system name (dropdown menu from all existing system in the database)
 "max_players": (integer) maximum players allowed to join
 "description": (string) room description (OPTIONAL)
 ```

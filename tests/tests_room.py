@@ -19,7 +19,7 @@ class RoomTestCase(TestCase):
             description = 'testing room stuff',
             max_players = 2,
             owner = new_user,
-            system = pathfinder)
+            game_model = pathfinder)
         new_room.save()
 
     def test_room_list(self):
@@ -33,7 +33,7 @@ class RoomTestCase(TestCase):
         self.assertEqual(c.post('/rooms/',
                 {'title':'testtitle',
                 'description':'test description',
-                'system':'pathfinder3.5',
+                'game_model':'pathfinder3.5',
                 'max_players': 8},
             HTTP_AUTHORIZATION = 'JWT {}'.format(login.login('testuser'))).status_code,
             201)
