@@ -22,4 +22,4 @@ class Room(models.Model):
     updated_at = models.DateTimeField(default=datetime.datetime.utcnow())
 
     owner = models.ForeignKey(User)
-    game_model = models.ForeignKey(GameModel, unique=True)
+    game_model = models.ForeignKey(GameModel)

@@ -109,3 +109,17 @@ def rooms(request):
                 return HttpResponse(json.dumps(return_data),status=200)
         else:
             return HttpResponse(status=405)
+
+def gamemodels(request):
+    if request.method == 'GET':
+        response=[]
+        gamemodel_list = list(models.GameModel.objects.all())
+        for gamemodel in gamemodel_list:
+            dic = {}
+            dic['name'] = gamemodel.name
+            dic['dice'] = gamemodel.dice
+            dic['updated_at'] = gamemodel.updated_at.isoformat()
+            response.append(dic)
+        return HttpResponse(json.dumps(response))
+    else:
+        return HttpResponse(status=405)

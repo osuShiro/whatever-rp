@@ -15,5 +15,4 @@ class GameModelTestCase(TestCase):
         pathfinder=models.GameModel.objects.get(name='pathfinder3.5')
         self.assertEqual(pathfinder.name,'pathfinder3.5')
         self.assertEqual(pathfinder.dice,'d20')
-        print(pathfinder.created_at)
-        print(pathfinder.updated_at)
+        print(c.get('/gamemodels/').content)
