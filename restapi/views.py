@@ -20,12 +20,13 @@ def rooms(request):
         response=[]
         room_list=list(models.Room.objects.all())
         for room in room_list:
-            room_dic={}
-            room_dic['id']=room.id
-            room_dic['name']=room.name
-            room_dic['description']=room.description
-            room_dic['owner']=room.owner.username
-            room_dic['updated_at']=room.updated_at.isoformat()
+            room_dic = {}
+            room_dic['text_id'] = room.text_id
+            room_dic['name'] = room.name
+            room_dic['description'] = room.description
+            room_dic['owner'] = room.owner.username
+            room_dic['game_model'] = room.game_model.name
+            room_dic['updated_at'] = room.updated_at.isoformat()
             response.append(room_dic)
         return HttpResponse(json.dumps(response))
     else:
