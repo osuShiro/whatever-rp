@@ -103,6 +103,8 @@ def rooms(request):
                     return_data['text_id'] = room.text_id
                 except ObjectDoesNotExist:
                     return HttpResponseBadRequest('Room not found.')
+                if request.user != room.owner:
+                    return HttpResponseForbidden()
                 for (key, value) in patch_data.items():
                     if key in ('name','description','max_players'):
                         setattr(room,key,value)
