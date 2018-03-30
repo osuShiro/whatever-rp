@@ -20,6 +20,8 @@ def rooms(request):
         response=[]
         room_list=list(models.Room.objects.all())
         for room in room_list:
+            if room.is_private:
+                continue
             room_dic = {}
             room_dic['text_id'] = room.text_id
             room_dic['name'] = room.name
@@ -55,25 +57,26 @@ def rooms(request):
                     max_players = request.POST['max_players']
                     if models.Room.objects.filter(name__iexact=room_name):
                         error['name'] = 'Room name already taken.'
+                    if 'is_private' in keys:
+                        is_private = request.POST['is_private']
+                    else:
+                        is_private = False
                     if not error:
                         # generate text id
-                        duplicate = False
-                        animal = ''
-                        adjective = ''
+                        duplicate = True
+                        text_id = ''
                         while duplicate:
-                            animal = animals[randint(animal_number)]
-                            adjective = adjectives[randint(adjective_number)]
-                            if models.Room.objects.filter(text_id=adjective+animal) != []:
-                                duplicate = True
-                            else:
+                            text_id = animals[randint(0, animal_number-1)] + adjectives[randint(0, adjective_number-1)]
+                            if list(models.Room.objects.filter(text_id=text_id)) == []:
                                 duplicate = False
                         description = '' if not request.POST['description'] else request.POST['description']
                         new_room = models.Room(name=room_name,
-                            text_id = (adjective+animal).lower(),
+                            text_id = text_id.lower(),
                             description = description,
                             max_players = max_players,
                             created_at = datetime.datetime.utcnow(),
                             updated_at = datetime.datetime.utcnow(),
+                            is_private = is_private,
                             owner = request.user,
                             game_model = game_model)
                         new_room.save()

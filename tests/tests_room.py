@@ -18,13 +18,13 @@ class RoomTestCase(TestCase):
             text_id = 'randomfox',
             description = 'testing room stuff',
             max_players = 2,
+            is_private = True,
             owner = new_user,
             game_model = pathfinder)
         new_room.save()
 
     def test_room_list(self):
         self.assertEqual(c.put('/rooms/').status_code,401)
-        print(c.get('/rooms/').content)
         c.login(username = 'testuser', password = 'azerty1234')
         self.assertEqual(c.post('/rooms/',
             {},
@@ -38,6 +38,7 @@ class RoomTestCase(TestCase):
             HTTP_AUTHORIZATION = 'JWT {}'.format(login.login('testuser'))).status_code,
             201)
         self.assertEqual(models.Room.objects.count(),2)
+        print(c.get('/rooms/').content)
         print(c.patch('/rooms/',
                 {'text_id':'randomfox',
                  'name':'edited name',

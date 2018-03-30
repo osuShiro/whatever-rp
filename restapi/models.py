@@ -18,6 +18,7 @@ class Room(models.Model):
     text_id = models.CharField(max_length=128, default='', unique=True)
     description = models.TextField(null=True, blank=True)
     max_players = models.IntegerField(default=8)
+    is_private = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=datetime.datetime.utcnow(), editable=False)
     updated_at = models.DateTimeField(default=datetime.datetime.utcnow())
 

@@ -18,6 +18,7 @@ Can be accessed as a guest.
 "owner": username of the room's creator (string)
 "updated_at": last updated (datetime ISO format)
 ```
+Rooms with a visibility set to private will not be listed.
 
 ## Room Creation
 Requires authentication.
@@ -30,6 +31,7 @@ Requires authentication.
 "game_model": (string) game system name (dropdown menu from all existing system in the database)
 "max_players": (integer) maximum players allowed to join
 "description": (string) room description (OPTIONAL)
+"is_private": (boolean) room visibility (OPTIONAL)
 ```
 
 **returns:** if successful, a 201 status code, with the data for the new room
