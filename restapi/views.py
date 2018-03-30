@@ -93,7 +93,6 @@ def rooms(request):
             # requirement: room text_id
             # turn the body of the request (bytes) into usable dictionary
             patch_data = json.loads(request.body.decode('utf8').replace("'",'"'))
-            print(patch_data)
             keys = patch_data.keys()
             if 'text_id' not in keys:
                 error['text_id'] = 'Room name missing.'
@@ -113,6 +112,20 @@ def rooms(request):
                 return_data['updated_at'] = room.updated_at.isoformat()
                 room.save()
                 return HttpResponse(json.dumps(return_data),status=200)
+        elif request.method == 'DELETE':
+            request_data = json.loads(request.body.decode('utf8').replace("'", '"'))
+            if 'text_id' not in request_data.keys():
+                error['text_id'] = 'Room name missing.'
+            else:
+                try:
+                    room = models.Room.objects.get(text_id = request_data['text_id'].lower())
+                    return_data['text_id'] = room.text_id
+                except ObjectDoesNotExist:
+                    return HttpResponseBadRequest('Room not found.')
+                if request.user != room.owner:
+                    return HttpResponseForbidden()
+                room.delete()
+                return HttpResponse(status=200)
         else:
             return HttpResponse(status=405)
 

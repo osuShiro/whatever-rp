@@ -40,10 +40,9 @@ error json otherwise
 ## Room Edition
 Requires authentication.
 
-
 **expected method**: PATCH
 
-**Payload*::
+**Payload*:
 ```
 "text_id": (string) the generated name for the room.
 "name": (string) a new title for the room (OPTIONAL)
@@ -53,4 +52,16 @@ Requires authentication.
 Any excess payload or keys that are not in that list are ignored.
 
 **returns**: if successful, 200 status code, with the list of changes (including updated_at, and the room's text_id)
+error json otherwise
+
+## Room Deletion
+Requires authentication.
+
+**expected method**: DELETE
+
+**Payload**:
+```
+"text_id": (string) the generated name for the room.
+```
+**returns** if successful, 200 status code
 error json otherwise

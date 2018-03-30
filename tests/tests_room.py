@@ -50,12 +50,24 @@ class RoomTestCase(TestCase):
                  'name':'edited name',
                  'description':'edited description',
                  'max_players':8},
-            {},
-            HTTP_AUTHORIZATION = 'JWT {}'.format(login.login('testuser'))).content)
+                {},
+                HTTP_AUTHORIZATION = 'JWT {}'.format(login.login('testuser'))).content)
         self.assertEqual(c_player.patch('/rooms/',
                 {'text_id':'randomfox',
                  'name':'edited name',
                  'description':'edited description',
                  'max_players':8},
-            {},
-            HTTP_AUTHORIZATION = 'JWT {}'.format(login.login('dude'))).status_code,403)
+                {},
+                HTTP_AUTHORIZATION = 'JWT {}'.format(login.login('dude'))).status_code,
+                403)
+        self.assertEqual(c_player.patch('/rooms/',
+                {'text_id': 'randomfox',},
+                {},
+                HTTP_AUTHORIZATION='JWT {}'.format(login.login('dude'))).status_code,
+                403)
+        self.assertEqual(c.delete('/rooms/',
+                {'text_id': 'randomfox', },
+                {},
+                HTTP_AUTHORIZATION='JWT {}'.format(login.login('dude'))).status_code,
+                200)
+        self.assertEqual(models.Room.objects.count(),1)
