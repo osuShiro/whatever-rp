@@ -28,7 +28,14 @@ class RoomTestCase(TestCase):
         new_room.save()
 
     def test_room_list(self):
-        self.assertEqual(c.put('/rooms/').status_code,401)
+        self.assertEqual(c.get('/rooms/').status_code, 200)
+        self.assertEqual(c.put('/rooms/').status_code,405)
+        self.assertEqual(c.post('/rooms/',
+                {'title':'testtitle',
+                'description':'test description',
+                'game_model':'pathfinder3.5',
+                'max_players': 8}).status_code,
+            405)
         c.login(username = 'testuser', password = 'azerty1234')
         c_player.login(username = 'dude', password = 'qsdfgh1234')
         self.assertEqual(c.post('/rooms/',

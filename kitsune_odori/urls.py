@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'^', include('rest_auth.urls')),
     url(r'^register/', include('rest_auth.registration.urls')),
     url(r'^refresh-token/', refresh_jwt_token),
+    url(r'^rooms/(?P<room_text_id>.+)',api.applications),
     url(r'^rooms/', api.rooms),
     url(r'^gamemodels/',api.gamemodels)
 ]

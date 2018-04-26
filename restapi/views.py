@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
 from restapi import models
+from stronghold.decorators import public
 import json, datetime, os
 
 with open('static/animals.txt','r') as an_file:
@@ -13,32 +14,37 @@ with open('static/adjectives.txt','r') as adj_file:
     adjective_number = len(adjectives)
 
 # Create your views here.
+@public
+def rooms_get(request):
+    response = []
+    room_list = list(models.Room.objects.all())
+    for room in room_list:
+        if room.is_private:
+            continue
+        room_dic = {}
+        room_dic['text_id'] = room.text_id
+        room_dic['name'] = room.name
+        room_dic['description'] = room.description
+        room_dic['owner'] = room.owner.username
+        room_dic['game_model'] = room.game_model.name
+        room_dic['updated_at'] = room.updated_at.isoformat()
+        response.append(room_dic)
+    return HttpResponse(json.dumps(response))
+
 def rooms(request):
     error = {}
     return_data = {}
     if request.method=='GET':
-        response=[]
-        room_list=list(models.Room.objects.all())
-        for room in room_list:
-            if room.is_private:
-                continue
-            room_dic = {}
-            room_dic['text_id'] = room.text_id
-            room_dic['name'] = room.name
-            room_dic['description'] = room.description
-            room_dic['owner'] = room.owner.username
-            room_dic['game_model'] = room.game_model.name
-            room_dic['updated_at'] = room.updated_at.isoformat()
-            response.append(room_dic)
-        return HttpResponse(json.dumps(response))
+        return rooms_get(request)
     else:
         # all other actions require being logged in
-        if 'HTTP_AUTHORIZATION' not in request.META.keys():
+        '''if 'HTTP_AUTHORIZATION' not in request.META.keys():
+            pass
             error['jwt']='JWT token incorrect or missing.'
-            return HttpResponse(json.dumps(error), status=401)
+            return HttpResponse(json.dumps(error), status=401)'''
         if request.method=='POST':
             if not request.user.is_authenticated:
-                return HttpResponseForbidden()
+                return HttpResponse(status=405)
             else:
                 keys=request.POST.keys()
                 # required fields: name, game_model, max_players
@@ -85,10 +91,10 @@ def rooms(request):
                         return_data['max_players'] = max_players
                         return_data['owner'] = request.user.username
                         return_data['game_model'] = game_model.name
-            if error:
-                return HttpResponseBadRequest(json.dumps(error))
-            else:
-                return HttpResponse(json.dumps(return_data), status=201)
+                if error:
+                    return HttpResponseBadRequest(json.dumps(error))
+                else:
+                    return HttpResponse(json.dumps(return_data), status=201)
         elif request.method == 'PATCH':
             # requirement: room text_id
             # turn the body of the request (bytes) into usable dictionary
@@ -142,3 +148,7 @@ def gamemodels(request):
         return HttpResponse(json.dumps(response))
     else:
         return HttpResponse(status=405)
+
+def applications(request,room_text_id):
+    if not room_text_id:
+        return HttpResponseBadRequest
