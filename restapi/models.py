@@ -11,8 +11,8 @@ APPLICATION_STATUS = (
 
 # Create your models here.
 class GameModel(models.Model):
-    name = models.CharField(max_length=128, null=False, blank=False)
-    dice = models.CharField(max_length=32, null=False, blank=False)
+    name = models.CharField(max_length=128, null=False, blank=False, default='')
+    dice = models.CharField(max_length=32, null=False, blank=False, default='')
     created_at = models.DateTimeField(default=datetime.datetime.utcnow(), editable=False)
     updated_at = models.DateTimeField(default=datetime.datetime.utcnow())
 
@@ -20,9 +20,9 @@ class GameModel(models.Model):
         return self.name + '(' + self.dice + ')'
 
 class Room(models.Model):
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=256, default='', blank=False)
     text_id = models.CharField(max_length=128, default='', unique=True)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True, default='')
     max_players = models.IntegerField(default=8)
     is_private = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=datetime.datetime.utcnow(), editable=False)
