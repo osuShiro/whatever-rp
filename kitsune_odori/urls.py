@@ -40,12 +40,12 @@ router.register(r'users', UserViewSet)
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/$', admin.site.urls),
     url(r'^', include(router.urls)),
     url(r'^', include('rest_auth.urls')),
-    url(r'^register/', include('rest_auth.registration.urls')),
-    url(r'^refresh-token/', refresh_jwt_token),
-    url(r'^rooms/(?P<room_text_id>.+)',api.applications),
-    url(r'^rooms/', api.rooms),
-    url(r'^gamemodels/',api.gamemodels)
+    url(r'^register/$', include('rest_auth.registration.urls')),
+    url(r'^refresh-token/$', refresh_jwt_token),
+    url(r'^rooms/(?P<room_text_id>.+)/applications/$',api.applications),
+    url(r'^rooms/$', api.rooms),
+    url(r'^gamemodels/$',api.gamemodels)
 ]
