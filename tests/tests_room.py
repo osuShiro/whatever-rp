@@ -28,6 +28,7 @@ class RoomTestCase(TestCase):
         new_room.save()
 
     def test_room_list(self):
+        # before logging in
         self.assertEqual(c.get('/rooms/').status_code, 200)
         self.assertEqual(c.put('/rooms/').status_code, 405)
         self.assertEqual(c.post('/rooms/',

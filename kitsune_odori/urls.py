@@ -43,7 +43,7 @@ urlpatterns = [
     url(r'^', include('rest_auth.urls')),
     url(r'^register/$', include('rest_auth.registration.urls')),
     url(r'^refresh-token/$', refresh_jwt_token),
-    url(r'^rooms/(?P<room_text_id>.+)/applications/$',applications.ApplicationEditView.as_view()),
-    url(r'^rooms/$', rooms.RoomEditView.as_view()),
-    url(r'^gamemodels/$',gamemodels.GamemodelEditView.as_view())
+    url(r'^rooms/(?P<room_text_id>.+)/applications/$',applications),
+    url(r'^rooms/$', rooms),
+    url(r'^gamemodels/$', gamemodels)
 ]

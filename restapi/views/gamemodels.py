@@ -1,11 +1,12 @@
 from restapi import models
 import json, datetime
-from rest_framework.generics import GenericAPIView
-from rest_framework.response import Response
+from stronghold.decorators import public
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 
-class GamemodelEditView(GenericAPIView):
-    def get(self):
-        response = []
+@public
+def gamemodels(request):
+    if request.method == 'GET':
+        response=[]
         gamemodel_list = list(models.GameModel.objects.all())
         for gamemodel in gamemodel_list:
             dic = {}
@@ -13,4 +14,6 @@ class GamemodelEditView(GenericAPIView):
             dic['dice'] = gamemodel.dice
             dic['updated_at'] = gamemodel.updated_at.isoformat()
             response.append(dic)
-        return Response(data=json.dumps(response), status=200)
+        return HttpResponse(json.dumps(response))
+    else:
+        return HttpResponse(status=405)
