@@ -15,4 +15,4 @@ class GameModelTestCase(TestCase):
         pathfinder=models.GameModel.objects.get(name='pathfinder3.5')
         self.assertEqual(pathfinder.name,'pathfinder3.5')
         self.assertEqual(pathfinder.dice,'d20')
-        print(c.get('/gamemodels/').content)
+        print('gamemodel', c.get('/gamemodels/').content)
