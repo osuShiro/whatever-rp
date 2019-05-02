@@ -1,19 +1,21 @@
-from restapi import models
-import json, datetime
+import json
 from stronghold.decorators import public
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
+from django.http import HttpResponse
+from restapi import models
+
 
 @public
 def gamemodels(request):
     if request.method == 'GET':
-        response=[]
+        response = []
         gamemodel_list = list(models.GameModel.objects.all())
+
         for gamemodel in gamemodel_list:
-            dic = {}
-            dic['name'] = gamemodel.name
-            dic['dice'] = gamemodel.dice
-            dic['updated_at'] = gamemodel.updated_at.isoformat()
+            dic = {'name': gamemodel.name,
+                   'dice': gamemodel.dice,
+                   'updated_at': gamemodel.updated_at.isoformat()
+                   }
             response.append(dic)
         return HttpResponse(json.dumps(response))
-    else:
-        return HttpResponse(status=405)
+
+    return HttpResponse(status=405)
