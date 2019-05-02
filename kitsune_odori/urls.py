@@ -18,7 +18,6 @@ from django.conf.urls import url, include
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 from rest_framework_jwt.views import refresh_jwt_token
-from restapi import views as api
 from restapi.views import applications, gamemodels, rooms
 
 # Serializers define the API representation.
