@@ -17,10 +17,9 @@ from django.contrib import admin
 from django.conf.urls import url, include
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
-from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_jwt.views import refresh_jwt_token
-from rest_framework_jwt.views import verify_jwt_token
 from restapi import views as api
+from restapi.views import applications, gamemodels, rooms
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -45,7 +44,7 @@ urlpatterns = [
     url(r'^', include('rest_auth.urls')),
     url(r'^register/$', include('rest_auth.registration.urls')),
     url(r'^refresh-token/$', refresh_jwt_token),
-    url(r'^rooms/(?P<room_text_id>.+)/applications/$',api.applications),
-    url(r'^rooms/$', api.rooms),
-    url(r'^gamemodels/$',api.gamemodels)
+    url(r'^rooms/(?P<room_text_id>.+)/applications/$',applications.ApplicationEditView.as_view()),
+    url(r'^rooms/$', rooms.RoomEditView.as_view()),
+    url(r'^gamemodels/$',gamemodels.GamemodelEditView.as_view())
 ]

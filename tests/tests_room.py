@@ -29,7 +29,7 @@ class RoomTestCase(TestCase):
 
     def test_room_list(self):
         self.assertEqual(c.get('/rooms/').status_code, 200)
-        self.assertEqual(c.put('/rooms/').status_code,405)
+        self.assertEqual(c.put('/rooms/').status_code, 405)
         self.assertEqual(c.post('/rooms/',
                 {'title':'testtitle',
                 'description':'test description',
