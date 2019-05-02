@@ -30,6 +30,7 @@ def rooms(request):
         return rooms_patch(request)
     if request.method == 'DELETE':
         return rooms_delete(request)
+
     return HttpResponse(status=405)
 
 
@@ -159,5 +160,5 @@ def rooms_delete(request):
         return HttpResponseForbidden()
 
     room.delete()
-    
+
     return HttpResponse(status=200)
