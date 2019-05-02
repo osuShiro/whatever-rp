@@ -54,11 +54,11 @@ class RoomTestCase(TestCase):
                  'status': 'a',},
                 {},
                 HTTP_AUTHORIZATION = 'JWT {}'.format(login.login('testuser'))).status_code,
-                403)
+                200)
         self.assertEqual(c_player.patch('/rooms/randomfox/applications/',
                                  {'text_id': 'dude-randomfox',
                                   'status': 'a', },
                                  {},
                                  HTTP_AUTHORIZATION='JWT {}'.format(login.login('dude'))).status_code,
-                         200)
+                         403)
         self.assertEqual(models.Application.objects.get(text_id__iexact='dude-randomfox').status, 'a')

@@ -26,11 +26,11 @@ def applications(request, room_text_id=None):
 
     # room owner checking applications to their room
     if request.method == 'GET':
-        application_get(room)
+        return application_get(room)
 
     # if user is replying to an application
     if request.method == 'PATCH':
-        application_reply(request)
+        return application_reply(request)
 
     # applying to a room
     elif request.method == 'POST':
@@ -56,11 +56,7 @@ def application_reply(request):
     try:
         application = models.Application.objects.get(text_id__iexact=patch_data['text_id'])
     except ObjectDoesNotExist:
-        return HttpResponse(json.dumps({'application':'Application not found'}), status=400)
-
-    if request.user != application.user:
-        return HttpResponse(json.dumps({'user':'This user does not have the right to reply to this application'}),
-                            status=403)
+        return HttpResponse(json.dumps({'application': 'Application not found'}), status=400)
 
     application.status = patch_data['status']
     application.updated_at = datetime.datetime.utcnow()
