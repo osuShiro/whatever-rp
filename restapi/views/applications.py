@@ -5,8 +5,6 @@ from restapi import models
 
 
 def applications(request, room_text_id=None):
-    error = {}
-
     if not room_text_id:
         return HttpResponseBadRequest
 
@@ -17,12 +15,10 @@ def applications(request, room_text_id=None):
         room = models.Room.objects.get(text_id__iexact=room_text_id)
         room_gm = room.owner
     except ObjectDoesNotExist:
-        error['room'] = 'Selected room does not exist.'
-        return HttpResponse(json.dumps(error), status=400)
+        return HttpResponse(json.dumps({'room':'Selected room does not exist.'}), status=400)
 
     if request.user != room_gm:
-        error['user'] = 'Logged in user is not the room\'s owner.'
-        return HttpResponseForbidden(json.dumps(error))
+        return HttpResponseForbidden(json.dumps({'user':'Logged in user is not the room\'s owner.'}))
 
     # room owner checking applications to their room
     if request.method == 'GET':
