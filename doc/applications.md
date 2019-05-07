@@ -29,7 +29,7 @@ Requires being logged in as the room owner.
 
 **Payload:**
 ```
-"username": (string) username of the player the application is for
+None
 ```
 
 **returns:** a json with the created application data:

@@ -45,6 +45,7 @@ class RoomTestCase(TestCase):
         CLIENT.login(username='testuser', password='azerty1234')
         CLIENT_PLAYER.login(username='dude', password='qsdfgh1234')
 
+    # testing the GET method
     def test_logged_out(self):
         # before logging in
         CLIENT.logout()
@@ -61,6 +62,7 @@ class RoomTestCase(TestCase):
         # there should only be one room in the list (one is private)
         self.assertEqual(len(jsonloads(CLIENT.get('/rooms/').content)),1)
 
+    # testing the POST method
     def test_create_room_no_data(self):
         # missing title, game_model, max_players should lead to a 400 bad request
         self.assertEqual(CLIENT.post('/rooms/',
@@ -119,6 +121,7 @@ class RoomTestCase(TestCase):
         # checking that the room's unique name has been generated
         self.assertNotEqual(models.Room.objects.get(name='testtitle').text_id, '')
 
+    # testing the PATCH method
     def test_edit_room_no_textid(self):
         self.assertEqual(CLIENT.patch('/rooms/',
                                              {'name': 'edited name',
@@ -143,6 +146,7 @@ class RoomTestCase(TestCase):
                                              HTTP_AUTHORIZATION='JWT {}'.format(login.login('dude'))).status_code,
                          403)
 
+    # testing the DELETE method
     def test_delete_room_no_textid(self):
         self.assertEqual(CLIENT.delete('/rooms/',
                                        {}).status_code,
