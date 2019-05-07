@@ -53,35 +53,42 @@ def rooms_get():
 
 
 def rooms_post(request):
-    error = {}
     return_data = {}
 
     keys = request.POST.keys()
     # required fields: name, game_model, max_players
     if 'title' not in keys:
-        error['name'] = 'Room name missing.'
+        return HttpResponseBadRequest(json.dumps({'title': 'Room title missing.'}))
     if 'game_model' not in keys:
-        error['game_model'] = 'Game model missing.'
+        return HttpResponseBadRequest(json.dumps({'game_model': 'Game model title missing.'}))
     if 'max_players' not in keys:
-        error['max_players'] = 'Maximum players allowed missing.'
-    if error:
-        return HttpResponseBadRequest(json.dumps(error))
+        return HttpResponseBadRequest(json.dumps({'max_players': 'Maximum players allowed missing.'}))
+
     room_name = request.POST['title']
 
+    # check for game_model existence
     try:
         game_model = models.GameModel.objects.get(name__iexact=request.POST['game_model'])
     except ObjectDoesNotExist:
-        error['game_model'] = 'Game model does not exist.'
+        return HttpResponseBadRequest(json.dumps({'game_model': 'Game model does not exist.'}))
 
     max_players = request.POST['max_players']
 
+    # check that room name isn't already taken
     if models.Room.objects.filter(name__iexact=room_name):
-        return HttpResponseBadRequest(json.dumps({'name':'Room name already taken'}))
+        return HttpResponseBadRequest(json.dumps({'name': 'Room name already taken'}))
 
+    # is_private is False by default
     if 'is_private' in keys:
         is_private = request.POST['is_private']
     else:
         is_private = False
+
+    # description is empty by default
+    if 'description' in keys:
+        description = request.POST['description']
+    else:
+        description = ''
 
     # generate text id
     duplicate = True
@@ -91,7 +98,8 @@ def rooms_post(request):
             randint(0, ADJECTIVE_COUNT - 1)]
         if not list(models.Room.objects.filter(text_id=text_id)):
             duplicate = False
-    description = '' if not request.POST['description'] else request.POST['description']
+
+    # create the new room
     new_room = models.Room(name=room_name,
                            text_id=text_id.lower(),
                            description=description,
@@ -102,6 +110,8 @@ def rooms_post(request):
                            owner=request.user,
                            game_model=game_model)
     new_room.save()
+
+    # return created room's data
     return_data['name'] = room_name
     return_data['text_id'] = new_room.text_id
     return_data['max_players'] = max_players
@@ -114,23 +124,26 @@ def rooms_post(request):
 def rooms_patch(request):
     return_data = {}
 
-    # requirement: room text_id
     # turn the body of the request (bytes) into usable dictionary
     patch_data = json.loads(request.body.decode('utf8').replace("'", '"'))
     keys = patch_data.keys()
 
+    # requirement: room text_id
     if 'text_id' not in keys:
         return HttpResponseBadRequest(json.dumps({'text_id': 'Room name missing'}))
 
+    # checking if room exists
     try:
         room = models.Room.objects.get(text_id=patch_data['text_id'].lower())
         return_data['text_id'] = room.text_id
     except ObjectDoesNotExist:
-        return HttpResponseBadRequest('Room not found.')
+        return HttpResponseBadRequest(json.dumps({'text_id': 'Room not found.'}))
 
+    # logged in user must be room owner
     if request.user != room.owner:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden(json.dumps({'user': 'User is not room owner.'}))
 
+    # update room content based on request data
     for (key, value) in patch_data.items():
         if key in ('name', 'description', 'max_players'):
             setattr(room, key, value)
@@ -138,6 +151,7 @@ def rooms_patch(request):
 
     room.updated_at = datetime.datetime.utcnow()
     return_data['updated_at'] = room.updated_at.isoformat()
+
     room.save()
 
     return HttpResponse(json.dumps(return_data), status=200)
@@ -148,16 +162,18 @@ def rooms_delete(request):
     request_data = json.loads(request.body.decode('utf8').replace("'", '"'))
 
     if 'text_id' not in request_data.keys():
-        return HttpResponse('Room not found', status=400)
+        return HttpResponse(json.dumps({'text_id': 'No text_id found.'}), status=400)
 
+    # check if room exists
     try:
         room = models.Room.objects.get(text_id=request_data['text_id'].lower())
         return_data['text_id'] = room.text_id
     except ObjectDoesNotExist:
-        return HttpResponseBadRequest('Room not found.')
+        return HttpResponseBadRequest(json.dumps({'text_id': 'Room not found.'}))
 
+    # logged in user must be room owner
     if request.user != room.owner:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden(json.dumps({'user': 'User is not room owner.'}))
 
     room.delete()
 
