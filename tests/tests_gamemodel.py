@@ -1,18 +1,21 @@
+from json import loads as jsonloads
 from django.test import TestCase, Client
 from restapi import models
 
-# Create your tests here.
-c = Client()
+CLIENT = Client()
+
 
 class GameModelTestCase(TestCase):
 
-    def setUp(self):
-        pathfinder=models.GameModel(name='pathfinder3.5',dice='d20')
+    def setUpTestData():
+        pathfinder = models.GameModel(name='pathfinder3.5',
+                                      dice='d20')
         pathfinder.save()
 
-    def test_game_model(self):
-        self.assertEqual(models.GameModel.objects.count(),1)
-        pathfinder=models.GameModel.objects.get(name='pathfinder3.5')
-        self.assertEqual(pathfinder.name,'pathfinder3.5')
-        self.assertEqual(pathfinder.dice,'d20')
-        print('gamemodel', c.get('/gamemodels/').content)
+    def test_gamemodel_list(self):
+        self.assertEqual(len(jsonloads(CLIENT.get('/gamemodels/').content)), 1)
+
+    def test_gamemodel_not_get(self):
+        self.assertEqual(CLIENT.post('/gamemodels/').status_code, 405)
+        self.assertEqual(CLIENT.patch('/gamemodels/').status_code, 405)
+        self.assertEqual(CLIENT.delete('/gamemodels/').status_code, 405)

@@ -3,7 +3,6 @@ from restapi import models
 from . import login
 from json import loads as jsonloads
 
-# Create your tests here.
 CLIENT = Client()
 CLIENT_PLAYER = Client()
 
